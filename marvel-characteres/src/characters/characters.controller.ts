@@ -1,7 +1,8 @@
-import {Controller, Get, Post, Put, Body, Param, Delete, Query, ParseIntPipe} from '@nestjs/common';
+import {Controller, Get, Post, Put, Patch, Body, Param, Delete, Query, ParseIntPipe} from '@nestjs/common';
 import {CharactersService} from './characters.service';
 import {CreateCharacterDto} from './dto/create-character.dto';
 import {UpdateCharacterDto} from './dto/update-character.dto';
+import {UpdateStatusDto} from './dto/update-status.dto';
 
 @Controller('characters')
 export class CharactersController {
@@ -23,8 +24,12 @@ export class CharactersController {
   update(@Param('id', ParseIntPipe) id: number, @Body() updateCharacterDto: UpdateCharacterDto) {
     return this.charactersService.update(id, updateCharacterDto);
   }
+  @Patch(':id/status')
+  updateStatus(@Param('id', ParseIntPipe) id: number, @Body() updateStatusDto: UpdateStatusDto) {
+    return this.charactersService.updateStatus(id, updateStatusDto.status);
+  }
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.charactersService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.charactersService.remove(id);
   }
 }

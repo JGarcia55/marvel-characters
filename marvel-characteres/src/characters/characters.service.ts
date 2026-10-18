@@ -107,8 +107,25 @@ export class CharactersService {
     return this.findOne(id);
   }
 
+  async updateStatus(id: number, status: string) {
+    const character = await this.charactersRepository.findOneBy({ id });
+    if (!character) {
+      throw new NotFoundException('Character not found');
+    }
+    if (character.status === 'RETIRED' && status === 'INJURED') {
+      throw new BadRequestException('Invalid status change');
+    }
+    character.status = status;
+    await this.charactersRepository.save(character);
+    return this.findOne(id);
+  }
 
-  remove(id: number) {
-    return `This action removes a #${id} character`;
+  async remove(id: number) {
+    const character = await this.charactersRepository.findOneBy({ id });
+    if (!character) {
+      throw new NotFoundException('Character not found');
+    }
+    await this.charactersRepository.remove(character);
+    return { message: 'Character deleted' };
   }
 }
